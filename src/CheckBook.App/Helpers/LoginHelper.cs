@@ -1,6 +1,9 @@
-﻿using System.Security.Claims;
+﻿using System.Configuration;
+using System.Security.Claims;
 using CheckBook.App.Models;
 using CheckBook.DataAccess.Services;
+using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.OpenIdConnect;
 
 namespace CheckBook.App.Helpers
 {
@@ -22,10 +25,37 @@ namespace CheckBook.App.Helpers
             }
 
             // build the user identity
-            var claimsIdentity = new ClaimsIdentity(new UserIdentity(user.FirstName + " " + user.LastName));
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-            claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, user.UserRole.ToString()));
+            var claimsIdentity = new ClaimsIdentity(new[] 
+            {
+                new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.UserRole.ToString()),
+                new Claim(ClaimTypes.AuthenticationMethod, CookieAuthenticationDefaults.AuthenticationType)
+            }, CookieAuthenticationDefaults.AuthenticationType);
+            
             return claimsIdentity;
         }
+
+        public static ClaimsIdentity GetClaimsIdentityForAzure(string email)
+        {
+            // try to find the user
+            var user = UserService.GetUserWithPassword(email);
+            if (user == null)
+            {
+                return null;
+            }
+
+            // build the user identity
+            var claimsIdentity = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Name, user.FirstName + " " + user.LastName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Role, user.UserRole.ToString()),
+                new Claim(ClaimTypes.AuthenticationMethod, OpenIdConnectAuthenticationDefaults.AuthenticationType)
+            }, CookieAuthenticationDefaults.AuthenticationType);
+            return claimsIdentity;
+        }
+
+        public static bool AADEnabled => !string.IsNullOrEmpty(ConfigurationManager.AppSettings["ida:ClientId"]);
     }
 }

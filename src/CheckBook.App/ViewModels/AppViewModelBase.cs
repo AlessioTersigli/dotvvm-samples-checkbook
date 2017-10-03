@@ -3,6 +3,10 @@ using DotVVM.Framework.ViewModel;
 using Microsoft.AspNet.Identity;
 using CheckBook.DataAccess.Enums;
 using DotVVM.Framework.Hosting;
+using Microsoft.Owin.Security.Cookies;
+using System.Linq;
+using System.Security.Claims;
+using Microsoft.Owin.Security.OpenIdConnect;
 
 namespace CheckBook.App.ViewModels
 {
@@ -41,10 +45,17 @@ namespace CheckBook.App.ViewModels
         public void SignOut()
         {
             // sign out
-            Context.GetAuthentication().SignOut();
-
-            // redirect to the login route
-            Context.RedirectToRoute("login");
+            var identity = (ClaimsIdentity)Context.HttpContext.User.Identity;
+            if (identity.FindFirstValue(ClaimTypes.AuthenticationMethod) == OpenIdConnectAuthenticationDefaults.AuthenticationType)
+            {
+                Context.GetAuthentication().SignOut(CookieAuthenticationDefaults.AuthenticationType, OpenIdConnectAuthenticationDefaults.AuthenticationType);
+                Context.InterruptRequest();
+            }
+            else
+            {
+                Context.GetAuthentication().SignOut(CookieAuthenticationDefaults.AuthenticationType);
+                Context.RedirectToRoute("login");
+            }
         }
     }
 }

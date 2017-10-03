@@ -9,6 +9,9 @@ using CheckBook.DataAccess.Services;
 using DotVVM.Framework.Controls;
 using DotVVM.Framework.Storage;
 using DotVVM.Framework.ViewModel;
+using DotVVM.Framework.Hosting;
+using System.Security.Claims;
+using Microsoft.AspNet.Identity;
 
 namespace CheckBook.App.ViewModels
 {
@@ -32,6 +35,7 @@ namespace CheckBook.App.ViewModels
             {
                 Data = UserService.GetUserInfo(GetUserId());
             }
+
             return base.PreRender();
         }
 
