@@ -183,7 +183,8 @@ namespace CheckBook.App.ViewModels
             {
                 var userId = GetUserId();
                 PaymentService.SavePayment(userId, Data, Payers, Debtors);
-                Copy();
+                string text = Info();
+                EmailService.SendEmail(Debtors.Concat(Payers).ToList(),text);
             }
             catch (Exception ex)
             {
@@ -194,7 +195,7 @@ namespace CheckBook.App.ViewModels
             GoBack();
         }
 
-        public void Copy()
+        public string Info()
         {
             var userId = GetUserId();
             var groupId = Convert.ToInt32(Context.Parameters["GroupId"]);
@@ -202,49 +203,14 @@ namespace CheckBook.App.ViewModels
             string uID = userId.ToString();
             string gID = Convert.ToString(Context.Parameters["GroupId"]);
             string date = DateTime.Today.ToString();
-            string text = "Payment details:\r\n" + "UserID:" + uID + "\r\n" + "GroupID:" + gID + "\r\n" + "Date:" + date + "\r\n";
-            text += "\r\nDescription\r\n";
-            var a = Data.Description;
-            string aus = a.ToString();
-            text += aus + "\r\n";
-            text += "\r\nCurrency\r\n";
-            a = Data.Currency;
-            aus = a.ToString();
-            text += aus + "\r\n";
-            text += "\r\nTotal Amount\r\n";
-            var ta = Payers.Sum(p => p.Amount);
-            aus = ta.ToString();
-            text += aus + "\r\n";
-            text += "\r\nPayers\r\n";
-            ///Data.Currency
-            foreach (var payer in Payers)
-            {
-                text += payer.Name + " " + payer.Amount + "\r\n";
-            }
-            text += "\r\nDebtors\r\n";
-            foreach (var debtor in Debtors)
-            {
-                text += debtor.Name + " " + debtor.Amount + "\r\n";
-            }
-            MailMessage mail = new MailMessage();
-            mail.From = new MailAddress(ConfigurationManager.AppSettings.Get("Email:EmailAddress"), ConfigurationManager.AppSettings.Get("Email:UserName"));
-            foreach (var user in Debtors.Concat(Payers))
-            {
-                if (user.UserId != null)
-                {
-                    UserInfoData userData = UserService.GetUserInfo(user.UserId.Value);
-                    mail.To.Add(new MailAddress(userData.Email, userData.Name));
-                }
-            }
-            mail.Subject = "Payment details";
-            mail.Body = text;
-            mail.IsBodyHtml = false;
-            SmtpClient client = new SmtpClient(ConfigurationManager.AppSettings.Get("Email:Server"));
-            client.UseDefaultCredentials = false;
-            client.EnableSsl = true;
-            client.Credentials = new System.Net.NetworkCredential(ConfigurationManager.AppSettings.Get("Email:EmailAddress"), ConfigurationManager.AppSettings.Get("Email:Password"));
-            client.Send(mail);
+            string description = Data.Description;
+            string currency = Data.Currency;
+            string text = EmailService.Text(Payers.ToList(),Debtors.ToList(),uID,gID,date,description,currency);
+            return text;
         }
+
+        
+
 
         /// <summary>
         /// Deletes the current payment.
