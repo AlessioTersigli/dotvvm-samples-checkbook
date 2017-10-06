@@ -104,18 +104,38 @@
     <Compile Include="Data\UserInfoData.cs" />
     <Compile Include="Context\AppContext.cs" />
     <Compile Include="Data\UserWithPasswordData.cs" />
+    <Compile Include="DTO\VoteDTO.cs" />
+    <Compile Include="DTO\VoteSessionDTO.cs" />
     <Compile Include="Enums\TransactionType.cs" />
     <Compile Include="Enums\UserRole.cs" />
     <Compile Include="Migrations\201602271557481_InitialDatabaseSchema.cs" />
     <Compile Include="Migrations\201602271557481_InitialDatabaseSchema.Designer.cs">
       <DependentUpon>201602271557481_InitialDatabaseSchema.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710061211164_VoteSessions_Added.cs" />
+    <Compile Include="Migrations\201710061211164_VoteSessions_Added.Designer.cs">
+      <DependentUpon>201710061211164_VoteSessions_Added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710061229124_Restaurant_Added.cs" />
+    <Compile Include="Migrations\201710061229124_Restaurant_Added.Designer.cs">
+      <DependentUpon>201710061229124_Restaurant_Added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710061303310_ConectionBetweenRestaurantAndGroup_Added.cs" />
+    <Compile Include="Migrations\201710061303310_ConectionBetweenRestaurantAndGroup_Added.Designer.cs">
+      <DependentUpon>201710061303310_ConectionBetweenRestaurantAndGroup_Added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201710061415245_date-added.cs" />
+    <Compile Include="Migrations\201710061415245_date-added.Designer.cs">
+      <DependentUpon>201710061415245_date-added.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Group.cs" />
     <Compile Include="Model\Payment.cs" />
+    <Compile Include="Model\Restaurant.cs" />
     <Compile Include="Model\Transaction.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\UserGroup.cs" />
+    <Compile Include="Model\VoteSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\PasswordData.cs" />
     <Compile Include="Security\PasswordHelper.cs" />
@@ -136,6 +156,18 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201602271557481_InitialDatabaseSchema.resx">
       <DependentUpon>201602271557481_InitialDatabaseSchema.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710061211164_VoteSessions_Added.resx">
+      <DependentUpon>201710061211164_VoteSessions_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710061229124_Restaurant_Added.resx">
+      <DependentUpon>201710061229124_Restaurant_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710061303310_ConectionBetweenRestaurantAndGroup_Added.resx">
+      <DependentUpon>201710061303310_ConectionBetweenRestaurantAndGroup_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710061415245_date-added.resx">
+      <DependentUpon>201710061415245_date-added.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

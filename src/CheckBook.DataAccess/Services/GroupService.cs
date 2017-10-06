@@ -7,6 +7,7 @@ using CheckBook.DataAccess.Context;
 using CheckBook.DataAccess.Data;
 using CheckBook.DataAccess.Model;
 using DotVVM.Framework.Controls;
+using CheckBook.DataAccess.DTO;
 
 namespace CheckBook.DataAccess.Services
 {
@@ -134,6 +135,7 @@ namespace CheckBook.DataAccess.Services
             }
         }
 
+
         /// <summary>
         /// Converts Group entity into GroupData
         /// </summary>
@@ -166,5 +168,54 @@ namespace CheckBook.DataAccess.Services
                 // and null is not assignable in the property of decimal
             };
         }
+
+
+  
+        public static VoteSessionDTO GetVoteSession(int groupId, int currentUserId)
+        {
+            using (var db = new AppContext())
+            {
+                var ret = new VoteSessionDTO();
+                var rest =  db.Restaurants.Where(v => v.GroupId == groupId).ToList();
+                var restIds = rest.Select(r => r.Id);
+                var voteSessios = db.VoteSessions.Where(v => restIds.Contains(v.RestaurantId) && v.Date== DateTime.Today);
+                var users = voteSessios.Select(v => v.User);
+
+                foreach (var restaurant in rest)
+                {
+                    var dto = new VoteDTO();
+                    dto.RestaurantId = restaurant.Id;
+                    dto.RestaurantName = restaurant.Name;
+                    dto.Users = voteSessios.Where(s => s.RestaurantId == restaurant.Id).Select(s => new UserBasicInfoData {
+                        Id = s.UserId,
+                        Name = s.User.FirstName +" " + s.User.LastName,
+                        ImageUrl = s.User.ImageUrl
+                    }).ToList();
+                    dto.IsMyVote = dto.Users.Any(s => s.Id == currentUserId);
+                    ret.Votes.Add(dto);
+                }
+
+                return ret;
+            }
+        }
+
+
+        public static void Vote( int userId, int restaurantId)
+        {
+            using (var db = new AppContext())
+            {
+                var vs = db.VoteSessions.Where(v => v.UserId == userId && v.Date == DateTime.Today).ToList();
+                if (vs.Any())
+                {
+                    db.VoteSessions.RemoveRange(vs);
+                }
+                
+                db.VoteSessions.Add(new VoteSession() {RestaurantId = restaurantId, UserId=userId, Date=DateTime.Today  }) ;
+                
+
+                db.SaveChanges();
+            }
+        }
+
     }
 }

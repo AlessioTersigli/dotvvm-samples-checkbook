@@ -21,6 +21,10 @@ namespace CheckBook.DataAccess.Context
 
         public DbSet<Transaction> Transactions { get; set; }
 
+        public DbSet<VoteSession> VoteSessions { get; set; }
+        public DbSet<Restaurant> Restaurants { get; set; }
+
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Transaction>()

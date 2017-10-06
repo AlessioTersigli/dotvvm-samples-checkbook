@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace CheckBook.DataAccess.Data
 {
-    public class UserBasicInfoData 
+    public class UserBasicInfoData : IAvatarData 
     {
 
         public int Id { get; set; }
@@ -12,6 +12,7 @@ namespace CheckBook.DataAccess.Data
         public string Name { get; set; }
 
         public string ImageUrl { get; set; }
-        
+
+        public int? UserId => Id;
     }
 }

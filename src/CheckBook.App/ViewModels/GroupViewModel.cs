@@ -8,6 +8,7 @@ using CheckBook.DataAccess.Services;
 using DotVVM.Framework.Controls;
 using DotVVM.Framework.Runtime.Filters;
 using DotVVM.Framework.ViewModel;
+using CheckBook.DataAccess.DTO;
 
 namespace CheckBook.App.ViewModels
 {
@@ -26,6 +27,11 @@ namespace CheckBook.App.ViewModels
         public List<GroupMemberData> Members { get; private set; }
 
         public List<SettlementData> Settlement { get; private set; }
+
+        public VoteSessionDTO Session { get; set; }
+
+      
+
 
         public GridViewDataSet<PaymentData> Payments { get; set; } = new GridViewDataSet<PaymentData>()
         {
@@ -57,8 +63,14 @@ namespace CheckBook.App.ViewModels
 
             // generate settlements
             Settlement = SettlementService.CalculateSettlement(Members).ToList();
+            Session = GroupService.GetVoteSession(GroupId, GetUserId());
 
             return base.PreRender();
+        }
+
+        public void Vote(int restaurantId)
+        {
+            GroupService.Vote(GetUserId(),restaurantId);
         }
     }
 }

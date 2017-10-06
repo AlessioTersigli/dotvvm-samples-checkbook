@@ -110,6 +110,9 @@ div.content {
 .section {
   margin-bottom: 50px;
 }
+.small-icons img {
+  max-width: 40px;
+}
 /* PAYMENT PAGE */
 .payment-group-form {
   margin: 0 auto;
